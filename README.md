@@ -1,119 +1,119 @@
-Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student
-AIM:
-To write a program to implement the the Logistic Regression Model to Predict the Placement Status of Student.
+# Implementation-of-Logistic-Regression-Using-Gradient-Descent
 
-Equipments Required:
-Hardware – PCs
-Anaconda – Python 3.7 Installation / Jupyter notebook
-Algorithm
-STEP 1:Start
+## AIM:
+To write a program to implement the the Logistic Regression Using Gradient Descent.
 
-STEP 2:Load and preprocess the dataset: drop irrelevant columns, handle missing values, and encode categorical variables using LabelEncoder.
+## Equipments Required:
+1. Hardware – PCs
+2. Anaconda – Python 3.7 Installation / Jupyter notebook
 
-STEP 3:Split the data into training and test sets using train_test_split.
-
-STEP 4:Create and fit a logistic regression model to the training data.
-
-STEP 5:Predict the target variable on the test set and evaluate performance using accuracy, confusion matrix, and classification report.
-
-STEP 6:Display the confusion matrix using metrics.ConfusionMatrixDisplay and plot the results.
-
-STEP 7:End
-
-Program:
+## Algorithm
+1. Gather labeled data with input features X and Y for classification as 0 or 1
+2. Set initial values for the model parameters (weight w and bias b), typicaly to small random values.
+3. Use the sigmoid function to predict probabilities:
+   P(y=1|X) = 1/(1+e^(wX+b))
+4. Compute the binary cross_entropy loss to measure how well the model's predictions match the actual labels
+5. Adjust w and b by computing their gradients with respect to the loss and applying gradient descent updates
+6. Iterate over the training data, repeatedly updating the parameters until convergence (or for a fixed number of iterations)
+7. Use the final model parameters to predict robabilities for new data and classify based on threshold (eg: 0.5 for binary calculation)
+   
+## Program:
+```
 /*
-Program to implement the the Logistic Regression Model to Predict the Placement Status of Student.
+Program to implement the the Logistic Regression Using Gradient Descent.
 Developed by: Preethi S
 RegisterNumber: 212223230157
 
 import pandas as pd
-data=pd.read_csv('/content/Placement_Data (1).csv')
-data.head()
-
-data1=data.copy()
-data1=data1.drop(["sl_no","salary"],axis=1) #removes the specified row or column.
-data1.head()
-
-data1.isnull().sum()
-
-data1.duplicated().sum()
-
-from sklearn.preprocessing import LabelEncoder
-le=LabelEncoder()
-data1["gender"]=le.fit_transform(data1["gender"])
-data1["ssc_b"]=le.fit_transform(data1["ssc_b"])
-data1["hsc_b"]=le.fit_transform(data1["hsc_b"])
-data1["hsc_s"]=le.fit_transform(data1["hsc_s"])
-data1["degree_t"]=le.fit_transform(data1["degree_t"])
-data1["workex"]=le.fit_transform(data1["workex"])
-data1["specialisation"]=le.fit_transform(data1["specialisation"])
-data1["status"]=le.fit_transform(data1["status"])
-data1
-
-
-x=data1.iloc[:,:-1]
-x
-
-y=data1['status']
-y
-
-from sklearn.model_selection import train_test_split
-x_train,x_test,y_train,y_test= train_test_split(x,y,test_size =0.2,random_sta
-
-from sklearn.linear_model import LogisticRegression
-lr = LogisticRegression(solver='liblinear')# A library for large linear classification
-lr.fit(x_train,y_train)
-y_pred=lr.predict(x_test)
-y_pred
-
-
-from sklearn.metrics import accuracy_score
-accuracy=accuracy_score(y_test,y_pred)
-accuracy
-
-from sklearn.metrics import confusion_matrix
-confusion = confusion_matrix(y_test,y_pred)
-confusion
-
-from sklearn.metrics import classification_report
-classification_report1 = classification_report(y_test,y_pred)
-print(classification_report1)
-
-
-lr.predict([[1,80,1,90,1,1,90,1,0,85,1,85]])
+import numpy as np
+dataset = pd.read_csv('Placement_Data.csv')
+dataset
+dataset=dataset.drop('sl_no',axis=1)
+dataset=dataset.drop('salary',axis=1)
+dataset["gender"]=dataset["gender"].astype('category')
+dataset["ssc_b"]=dataset["ssc_b"].astype('category')
+dataset["hsc_b"]=dataset["hsc_b"].astype('category')
+dataset["degree_t"]=dataset["degree_t"].astype('category')
+dataset["workex"]=dataset["workex"].astype('category')
+dataset["specialisation"]=dataset["specialisation"].astype('category')
+dataset["status"]=dataset["status"].astype('category')
+dataset["hsc_s"]=dataset["hsc_s"].astype('category')
+dataset.dtypes
+dataset["gender"] = dataset["gender"].cat.codes
+dataset["gender"] = dataset["gender"].cat.codes
+dataset["ssc_b"] = dataset["ssc_b"].cat.codes
+dataset["hsc_b"] = dataset["hsc_b"].cat.codes
+dataset["degree_t"] = dataset["degree_t"].cat.codes
+dataset["workex"] = dataset["workex"].cat.codes
+dataset["specialisation"] = dataset["specialisation"].cat.codes
+dataset["status"] = dataset["status"].cat.codes
+dataset["hsc_s"] = dataset["hsc_s"].cat.codes
+dataset
+X=dataset.iloc[:, :-1].values
+Y=dataset.iloc[:, -1].values
+Y
+theta = np.random.randn(X.shape[1])
+y=Y
+def sigmoid(z):
+    return 1/(1+np.exp(-z))
+def loss(theta, X, y):
+    h=sigmoid(X.dot(theta))
+    retun -np.sum(y*np.log(h) + (1-y) * np.log(1-h))
+def gradient_descent(theta,X,y,alpha,num_iterations):
+    m=len(y)
+    for i in range(num_iterations):
+        h=sigmoid(X.dot(theta))
+        gradient = X.T.dot(h-y)/m
+        theta -= alpha * gradient
+    return theta
+theta = gradient_descent(theta, X, y, alpha = 0.01, num_iterations=1000)
+def predict(theta, X):
+    h=sigmoid(X.dot(theta))
+    y_pred = np.where(h>=0.5,1,0)
+    return y_pred
+y_pred = predict(theta,X)
+accuracy = np.mean(y_pred.flatten()==y)
+print("Accuracy: ",accuracy)
+print(y_pred)
+print(Y)
+xnew=np.array([[0,87,0,95,0,2,78,2,0,0,1,0]])
+y_prednew=predict(theta,xnew)
+print(y_prednew)
+xnew=np.array([[0,0,0,0,0,2,8,2,0,0,1,0]])
+y_prednew=predict(theta,xnew)
+print(y_prednew)
 */
-Output:
+```
+
+## Output:
 Dataset
-Screenshot 2024-09-14 160445
 
-Head
-Screenshot 2024-09-14 160501
+![Screenshot 2024-09-16 101916](https://github.com/user-attachments/assets/e27e523c-3db3-40df-99b5-a6e12dc13ac7)
 
-Null values
-Screenshot 2024-09-14 160509
+![Screenshot 2024-09-16 101946](https://github.com/user-attachments/assets/f4548e3f-0723-458d-97e5-31adb191430a)
 
-Sum of Duplicate values
-Screenshot 2024-09-14 160517
+![Screenshot 2024-09-16 101956](https://github.com/user-attachments/assets/e432594c-7c64-4182-82cc-e041207cc62e)
 
-X and Y data
-Screenshot 2024-09-14 160542
+# Array
 
-Screenshot 2024-09-14 160555
+![Screenshot 2024-09-16 102007](https://github.com/user-attachments/assets/f0d21389-20b1-48da-8fca-17908ee15fcd)
 
-Train data
-Screenshot 2024-09-14 160604
+# Accuracy
 
-Test data
-Screenshot 2024-09-14 160612
+![Screenshot 2024-09-16 102016](https://github.com/user-attachments/assets/80ccfbd3-ffc8-466d-ae52-6aa2365c4f48)
 
-Accuracy
-Screenshot 2024-09-14 160618
+# Y Prediction
 
-Confusion Matrix
-Screenshot 2024-10-19 171311
+![Screenshot 2024-09-16 102023](https://github.com/user-attachments/assets/eb95a4d3-2ed9-443d-80c8-7f5e4c905f46)
 
-Precision
-Screenshot 2024-10-19 171322
+# Y
 
-Result:
-Thus the program to implement the the Logistic Regression Model to Predict the Placement Status of Student is written and verified using python programming.
+![Screenshot 2024-09-16 102028](https://github.com/user-attachments/assets/3e27ea3f-c1a0-4ea6-a1fc-755cb48dbeca)
+
+# New Prediction
+
+![Screenshot 2024-09-16 102035](https://github.com/user-attachments/assets/d9b842e7-0ea5-4eab-af32-06aea7a36285)
+
+
+## Result:
+Thus the program to implement the the Logistic Regression Using Gradient Descent is written and verified using python programming.
