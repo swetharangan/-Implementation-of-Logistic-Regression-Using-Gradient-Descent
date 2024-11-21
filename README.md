@@ -1,108 +1,119 @@
-# Implementation-of-Simple-Linear-Regression-Model-for-Predicting-the-Marks-Scored
+Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student
+AIM:
+To write a program to implement the the Logistic Regression Model to Predict the Placement Status of Student.
 
-## AIM:
-To write a program to predict the marks scored by a student using the simple linear regression model.
+Equipments Required:
+Hardware – PCs
+Anaconda – Python 3.7 Installation / Jupyter notebook
+Algorithm
+STEP 1:Start
 
-## Equipments Required:
-1. Hardware – PCs
-2. Anaconda – Python 3.7 Installation / Jupyter notebook
+STEP 2:Load and preprocess the dataset: drop irrelevant columns, handle missing values, and encode categorical variables using LabelEncoder.
 
-## Algorithm
-1. Gather data consisting of two variables. Input- a factor that affects the marks and Output - the marks scored by students
-2. Plot the data points on a graph where x-axis represents the input variable and y-axis represents the marks scored
-3. Define and initialize the parameters for regression model: slope  controls the steepness and intercept represents where the line crsses the y-axis
-4. Use the linear equation to predict marks based on the input
-   Predicted Marks = m.(hours studied) + b
-5. for each data point calculate the difference between the actual and predicted marks
-6. Adjust the values of m and b to reduce the overall error. The gradient descent algorithm helps update these parameters based on the calculated error
-7. Once the model parameters are optimized, use the final equation to predict marks for any new input data
-   
-## Program:
-```
+STEP 3:Split the data into training and test sets using train_test_split.
+
+STEP 4:Create and fit a logistic regression model to the training data.
+
+STEP 5:Predict the target variable on the test set and evaluate performance using accuracy, confusion matrix, and classification report.
+
+STEP 6:Display the confusion matrix using metrics.ConfusionMatrixDisplay and plot the results.
+
+STEP 7:End
+
+Program:
 /*
-Program to implement the simple linear regression model for predicting the marks scored.
-Developed by: swetha.R
-RegisterNumber: 212223040221
+Program to implement the the Logistic Regression Model to Predict the Placement Status of Student.
+Developed by: Preethi S
+RegisterNumber: 212223230157
 
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.metrics import mean_absolute_error,mean_squared_error
-df = pd.read_csv('student_scores.csv')
-print(df)
-print()
-df.head(0)
-df.tail(0)
-print(df.head())
-print(df.tail())
-x = df.iloc[:,:-1].values
-print(x)
-y = df.iloc[:,1].values
-print(y)
+data=pd.read_csv('/content/Placement_Data (1).csv')
+data.head()
+
+data1=data.copy()
+data1=data1.drop(["sl_no","salary"],axis=1) #removes the specified row or column.
+data1.head()
+
+data1.isnull().sum()
+
+data1.duplicated().sum()
+
+from sklearn.preprocessing import LabelEncoder
+le=LabelEncoder()
+data1["gender"]=le.fit_transform(data1["gender"])
+data1["ssc_b"]=le.fit_transform(data1["ssc_b"])
+data1["hsc_b"]=le.fit_transform(data1["hsc_b"])
+data1["hsc_s"]=le.fit_transform(data1["hsc_s"])
+data1["degree_t"]=le.fit_transform(data1["degree_t"])
+data1["workex"]=le.fit_transform(data1["workex"])
+data1["specialisation"]=le.fit_transform(data1["specialisation"])
+data1["status"]=le.fit_transform(data1["status"])
+data1
+
+
+x=data1.iloc[:,:-1]
+x
+
+y=data1['status']
+y
+
 from sklearn.model_selection import train_test_split
-x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=1/3,random_state=0)
-from sklearn.linear_model import LinearRegression
-regressor = LinearRegression()
-regressor.fit(x_train,y_train)
-y_pred = regressor.predict(x_test)
-print(y_pred)
-print(y_test)
+x_train,x_test,y_train,y_test= train_test_split(x,y,test_size =0.2,random_sta
 
-#Graph plot for training data
+from sklearn.linear_model import LogisticRegression
+lr = LogisticRegression(solver='liblinear')# A library for large linear classification
+lr.fit(x_train,y_train)
+y_pred=lr.predict(x_test)
+y_pred
 
-plt.scatter(x_train,y_train,color='black')
-plt.plot(x_train,regressor.predict(x_train),color='blue')
-plt.title("Hours vs Scores(Training set)")
-plt.xlabel("Hours")
-plt.ylabel("Scores")
-plt.show()
 
-#Graph plot for test data
+from sklearn.metrics import accuracy_score
+accuracy=accuracy_score(y_test,y_pred)
+accuracy
 
-plt.scatter(x_test,y_test,color='black')
-plt.plot(x_train,regressor.predict(x_train),color='red')
-plt.title("Hours vs Scores(Testing set)")
-plt.xlabel("Hours")
-plt.ylabel("Scores")
-plt.show()
-mse=mean_absolute_error(y_test,y_pred)
-print('MSE = ',mse)
-mae=mean_absolute_error(y_test,y_pred)
-print('MAE = ',mae)
-rmse=np.sqrt(mse)
-print("RMSE= ",rmse) 
+from sklearn.metrics import confusion_matrix
+confusion = confusion_matrix(y_test,y_pred)
+confusion
+
+from sklearn.metrics import classification_report
+classification_report1 = classification_report(y_test,y_pred)
+print(classification_report1)
+
+
+lr.predict([[1,80,1,90,1,1,90,1,0,85,1,85]])
 */
-```
+Output:
+Dataset
+Screenshot 2024-09-14 160445
 
-## Output:
+Head
+Screenshot 2024-09-14 160501
 
-# Head and Tail
+Null values
+Screenshot 2024-09-14 160509
 
-![Screenshot 2024-09-14 154846](https://github.com/user-attachments/assets/a9f319a1-c104-4c7f-aead-232905744783)
+Sum of Duplicate values
+Screenshot 2024-09-14 160517
 
-# X and Y
+X and Y data
+Screenshot 2024-09-14 160542
 
-![Screenshot 2024-10-19 173916](https://github.com/user-attachments/assets/0b027f04-0a68-4934-92ab-a00e141f204a)
+Screenshot 2024-09-14 160555
 
-![Screenshot 2024-10-19 173929](https://github.com/user-attachments/assets/eb01b2e1-f76d-49f7-80e4-2c3462f4c11a)
+Train data
+Screenshot 2024-09-14 160604
 
+Test data
+Screenshot 2024-09-14 160612
 
-# Training data
+Accuracy
+Screenshot 2024-09-14 160618
 
-![Screenshot 2024-09-14 154930](https://github.com/user-attachments/assets/608786a8-45c5-4bf4-b022-9a34d9bde8f1)
+Confusion Matrix
+Screenshot 2024-10-19 171311
 
-# Plot for training set
+Precision
+Screenshot 2024-10-19 171322
 
-![Screenshot 2024-09-14 154950](https://github.com/user-attachments/assets/5c5ae456-cdd0-4536-baec-20b0008bbfa6)
-
-# Plot for test set
-
-![Screenshot 2024-09-14 155012](https://github.com/user-attachments/assets/af3f6b1b-7bfd-4f6d-b6d3-f09a9e5528c8)
-
-# MSE, MAE, RMSE values
-
-![Screenshot 2024-09-14 155028](https://github.com/user-attachments/assets/807200e9-440c-4453-af3f-285d292451b9)
-
-
-## Result:
-Thus the program to implement the simple linear regression model for predicting the marks 
+Result:
+Thus the program to implement the the Logistic Regression Model to Predict the Placement Status of Student is written and verified using python programming.
