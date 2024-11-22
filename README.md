@@ -1,119 +1,75 @@
-# Implementation-of-Logistic-Regression-Using-Gradient-Descent
+# Implementation-of-Linear-Regression-Using-Gradient-Descent
 
 ## AIM:
-To write a program to implement the the Logistic Regression Using Gradient Descent.
+To write a program to predict the profit of a city using the linear regression model with gradient descent.
 
 ## Equipments Required:
 1. Hardware – PCs
 2. Anaconda – Python 3.7 Installation / Jupyter notebook
 
 ## Algorithm
-1. Gather labeled data with input features X and Y for classification as 0 or 1
-2. Set initial values for the model parameters (weight w and bias b), typicaly to small random values.
-3. Use the sigmoid function to predict probabilities:
-   P(y=1|X) = 1/(1+e^(wX+b))
-4. Compute the binary cross_entropy loss to measure how well the model's predictions match the actual labels
-5. Adjust w and b by computing their gradients with respect to the loss and applying gradient descent updates
-6. Iterate over the training data, repeatedly updating the parameters until convergence (or for a fixed number of iterations)
-7. Use the final model parameters to predict robabilities for new data and classify based on threshold (eg: 0.5 for binary calculation)
-   
+1)Data Preparation:
+Load the dataset and extract input features (X) and target variable (y).
+Convert these arrays to float type and reshape as needed.
+
+2)Data Scaling:
+Apply feature scaling using StandardScaler on both input features and target variable to standardize their values.
+
+3)Model Training (Linear Regression):
+Implement a linear regression model with gradient descent, initializing parameters (theta) and iteratively updating them based on the errors between predictions and actual values.
+
+4)Prediction:
+Prepare new data, scale it, and use the trained model to make predictions based on the scaled inputs.
+
+5)Inverse Scaling and Output:
+Inverse transform the prediction to revert it back to the original scale and print the predicted value.
+
 ## Program:
-```
-/*
-Program to implement the the Logistic Regression Using Gradient Descent.
-Developed by: Preethi S
-RegisterNumber: 212223230157
 
-import pandas as pd
+Program to implement the linear regression using gradient descent.
+Developed by: Swetha R
+RegisterNumber:  212223040221
+
+```py
 import numpy as np
-dataset = pd.read_csv('Placement_Data.csv')
-dataset
-dataset=dataset.drop('sl_no',axis=1)
-dataset=dataset.drop('salary',axis=1)
-dataset["gender"]=dataset["gender"].astype('category')
-dataset["ssc_b"]=dataset["ssc_b"].astype('category')
-dataset["hsc_b"]=dataset["hsc_b"].astype('category')
-dataset["degree_t"]=dataset["degree_t"].astype('category')
-dataset["workex"]=dataset["workex"].astype('category')
-dataset["specialisation"]=dataset["specialisation"].astype('category')
-dataset["status"]=dataset["status"].astype('category')
-dataset["hsc_s"]=dataset["hsc_s"].astype('category')
-dataset.dtypes
-dataset["gender"] = dataset["gender"].cat.codes
-dataset["gender"] = dataset["gender"].cat.codes
-dataset["ssc_b"] = dataset["ssc_b"].cat.codes
-dataset["hsc_b"] = dataset["hsc_b"].cat.codes
-dataset["degree_t"] = dataset["degree_t"].cat.codes
-dataset["workex"] = dataset["workex"].cat.codes
-dataset["specialisation"] = dataset["specialisation"].cat.codes
-dataset["status"] = dataset["status"].cat.codes
-dataset["hsc_s"] = dataset["hsc_s"].cat.codes
-dataset
-X=dataset.iloc[:, :-1].values
-Y=dataset.iloc[:, -1].values
-Y
-theta = np.random.randn(X.shape[1])
-y=Y
-def sigmoid(z):
-    return 1/(1+np.exp(-z))
-def loss(theta, X, y):
-    h=sigmoid(X.dot(theta))
-    retun -np.sum(y*np.log(h) + (1-y) * np.log(1-h))
-def gradient_descent(theta,X,y,alpha,num_iterations):
-    m=len(y)
-    for i in range(num_iterations):
-        h=sigmoid(X.dot(theta))
-        gradient = X.T.dot(h-y)/m
-        theta -= alpha * gradient
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+def linear_regression(X1,y,learning_rate=0.01,num_iters=1000):
+    X=np.c_[np.ones(len(X1)),X1]
+    theta=np.zeros(X.shape[1]).reshape(-1,1)
+    for _ in range(num_iters):
+        predictions=(X).dot(theta).reshape(-1,1)
+        errors=(predictions-y).reshape(-1,1)
+        theta -=learning_rate*(1/len(X1))*X.T.dot(errors)
     return theta
-theta = gradient_descent(theta, X, y, alpha = 0.01, num_iterations=1000)
-def predict(theta, X):
-    h=sigmoid(X.dot(theta))
-    y_pred = np.where(h>=0.5,1,0)
-    return y_pred
-y_pred = predict(theta,X)
-accuracy = np.mean(y_pred.flatten()==y)
-print("Accuracy: ",accuracy)
-print(y_pred)
-print(Y)
-xnew=np.array([[0,87,0,95,0,2,78,2,0,0,1,0]])
-y_prednew=predict(theta,xnew)
-print(y_prednew)
-xnew=np.array([[0,0,0,0,0,2,8,2,0,0,1,0]])
-y_prednew=predict(theta,xnew)
-print(y_prednew)
-*/
+data=pd.read_csv('50_Startups.csv');
+print(data.head())
+X=(data.iloc[1:,:-2].values)
+print(X)
+X1=X.astype(float)
+scaler=StandardScaler()
+y=(data.iloc[1:,-1].values).reshape(-1,1)
+print(y)
+X1_Scaled=scaler.fit_transform(X1)
+Y1_Scaled=scaler.fit_transform(y)
+print(X1_Scaled)
+print(Y1_Scaled)
+theta=linear_regression(X1_Scaled,Y1_Scaled)
+new_data=np.array([16539.2,136897.8,471784.1]).reshape(-1,1)
+new_Scaled=scaler.fit_transform(new_data)
+prediction=np.dot(np.append(1,new_Scaled),theta)
+prediction=prediction.reshape(-1,1)
+pre=scaler.inverse_transform(prediction)
+print(f"Predicted value:{pre}")
 ```
+# Output:
 
-## Output:
-Dataset
+#![Screenshot 2024-08-30 112656](https://github.com/user-attachments/assets/1072069c-37a1-4dc7-9873-b8718f3faf39)
 
-![Screenshot 2024-09-16 101916](https://github.com/user-attachments/assets/e27e523c-3db3-40df-99b5-a6e12dc13ac7)
 
-![Screenshot 2024-09-16 101946](https://github.com/user-attachments/assets/f4548e3f-0723-458d-97e5-31adb191430a)
+![Screenshot 2024-08-30 112708](https://github.com/user-attachments/assets/5b900e04-53ae-4476-8187-f423aacb8c51)
 
-![Screenshot 2024-09-16 101956](https://github.com/user-attachments/assets/e432594c-7c64-4182-82cc-e041207cc62e)
-
-# Array
-
-![Screenshot 2024-09-16 102007](https://github.com/user-attachments/assets/f0d21389-20b1-48da-8fca-17908ee15fcd)
-
-# Accuracy
-
-![Screenshot 2024-09-16 102016](https://github.com/user-attachments/assets/80ccfbd3-ffc8-466d-ae52-6aa2365c4f48)
-
-# Y Prediction
-
-![Screenshot 2024-09-16 102023](https://github.com/user-attachments/assets/eb95a4d3-2ed9-443d-80c8-7f5e4c905f46)
-
-# Y
-
-![Screenshot 2024-09-16 102028](https://github.com/user-attachments/assets/3e27ea3f-c1a0-4ea6-a1fc-755cb48dbeca)
-
-# New Prediction
-
-![Screenshot 2024-09-16 102035](https://github.com/user-attachments/assets/d9b842e7-0ea5-4eab-af32-06aea7a36285)
-
+![Screenshot 2024-08-30 112715](https://github.com/user-attachments/assets/2e70a6e0-9e41-4164-b391-54733b3bc586)
 
 ## Result:
-Thus the program to implement the the Logistic Regression Using Gradient Descent is written and verified using python programming.
+Thus the program to implement the linear regression using gradient descent is written and verified using python programming.
